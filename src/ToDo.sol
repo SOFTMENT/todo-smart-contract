@@ -51,27 +51,27 @@ contract ToDo {
 
     // -------- CRUD --------
     function createNewTask(
-        string memory title,
-        string memory description
+        string calldata title,
+        string calldata description
     ) external returns (uint256 id) {
         id = _nextId++;
         Task storage t = tasks[id];
         t.taskId = id;
         t.title = title;
         t.description = description;
-        t.isCompleted = false;
+        // t.isCompleted is left as default = false (save one SSTORE)
         t.owner = msg.sender;
         emit TaskCreated(id, msg.sender, title);
     }
 
     function updateTask(
         uint256 id,
-        string memory title,
-        string memory description
+        string calldata title,
+        string calldata description
     ) external onlyOwner(id) notCompleted(id) {
         Task storage t = tasks[id];
         t.title = title;
-        t.description = description; // preserve t.isCompleted as-is
+        t.description = description;
         emit TaskUpdated(id, title, description);
     }
 
